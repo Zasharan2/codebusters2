@@ -178,6 +178,35 @@ const MORSE = {
     "--..":"Z"
 }
 
+const LETTERTOBACONIAN = {
+    "A":"AAAAA",
+    "B":"AAAAB",
+    "C":"AAABA",
+    "D":"AAABB",
+    "E":"AABAA",
+    "F":"AABAB",
+    "G":"AABBA",
+    "H":"AABBB",
+    "I":"ABAAA",
+    "J":"ABAAA",
+    "K":"ABAAB",
+    "L":"ABABA",
+    "M":"ABABB",
+    "N":"ABBAA",
+    "O":"ABBAB",
+    "P":"ABBBA",
+    "Q":"ABBBB",
+    "R":"BAAAA",
+    "S":"BAAAB",
+    "T":"BAABA",
+    "U":"BAABB",
+    "V":"BAABB",
+    "W":"BABAA",
+    "X":"BABAB",
+    "Y":"BABBA",
+    "Z":"BABBB"
+}
+
 const CIPHERTYPE = {
     ARISTOCRAT: 1,
     ARISTOCRATK1: 1.1,
@@ -187,6 +216,7 @@ const CIPHERTYPE = {
     PATRISTOCRAT: 2,
     VIGENÈRE: 3,
     CRYPTARITHM: 4,
+    BACONIAN: 5,
 }
 
 var cipher;
@@ -243,6 +273,16 @@ function main() {
             renderText("Polyalphabetic", 380, 100, 25);
             ctx.moveTo(270, 110);
             ctx.lineTo(490, 110);
+            ctx.strokeStyle = "#20c20eff";
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
+            // morse label
+            ctx.beginPath();
+            ctx.fillStyle = "#20c20eff";
+            renderText("Morse", 630, 100, 25);
+            ctx.moveTo(520, 110);
+            ctx.lineTo(740, 110);
             ctx.strokeStyle = "#20c20eff";
             ctx.lineWidth = 4;
             ctx.stroke();
@@ -361,6 +401,21 @@ function main() {
             }
             ctx.font = "20px Courier New";
             ctx.fillText("Vigenère", 290, 140);
+
+            // baconian
+            ctx.beginPath();
+            ctx.fillStyle = "#20c20eff";
+            ctx.strokeStyle = "#20c20eff";
+            ctx.lineWidth = 1;
+            if (mouseX > 280 && mouseX < 395 && mouseY > 160 && mouseY < 195) {
+                ctx.strokeRect(280, 160, 115, 30);
+                if (mouseDown) {
+                    cipher = CIPHERTYPE.BACONIAN;
+                    gameScreen = GAMESCREENTYPE.TITLE_TO_CODE;
+                }
+            }
+            ctx.font = "20px Courier New";
+            ctx.fillText("Baconian", 290, 180);
 
             // cryptarithm
             ctx.beginPath();
@@ -1002,6 +1057,65 @@ function main() {
                     moveToPrevChar = false;
                     break;
                 }
+                case CIPHERTYPE.BACONIAN: {
+                    encryptedQuote = "";
+                    for (var i = 0; i < quote.length; i++) {
+                        if (!((quote[i].match(symbolRegex) || []).length > 0)) {
+                            encryptedQuote += LETTERTOBACONIAN[quote[i]];
+                        } else {
+                            encryptedQuote += quote[i];
+                        }
+                    }
+                    console.log(encryptedQuote);
+                    var encryptArray = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
+                    for (var i = 0; i < encryptArray.length; i++) {
+                        if (Math.floor(Math.random() * 2) == 0) {
+                            encryptArray[i] = "A"
+                        } else {
+                            encryptArray[i] = "B"
+                        }
+                    }
+                    console.log(encryptArray);
+                    for (var i = 0; i < encryptedQuote.length; i++) {
+                        if (!((encryptedQuote[i].match(symbolRegex) || []).length > 0)) {
+                            var a = Math.floor(Math.random() * 26);
+                            while (encryptArray[a] != encryptedQuote[i]) {
+                                a = Math.floor(Math.random() * 26);
+                            }
+                            encryptedQuote = encryptedQuote.replaceAt(i, Object.keys(LETTER).find(key => LETTER[key] == a));
+                        }
+                    }
+                    console.log(encryptedQuote);
+                    encryptedLines = getLines(ctx, encryptedQuote, 930);
+
+                    valueQuote = encryptedQuote;
+                    // quoteLines = [];
+                    // var k = 0;
+                    // for (var i = 0; i < encryptedLines.length; i++) {
+                    //     var chars = "";
+                    //     for (var j = 0; j < (encryptedLines[i].length); j += 5) {
+                    //         chars += quote[k];
+                    //         k++;
+                    //     }
+                    //     quoteLines.push(chars);
+                    // }
+                    // console.log(quoteLines);
+                    quoteLines = getLines(ctx, quote, 930);
+                    valueLines = getLines(ctx, encryptedQuote, 930);
+                    correctLines = getLines(ctx, encryptedQuote, 930);
+                    for (var i = 0; i < valueLines.length; i++) {
+                        valueLines[i] = valueLines[i].replaceAll(/[A-Z]/g, "_");
+                        correctLines[i] = correctLines[i].replaceAll(/[A-Z]/g, "_")
+                    }
+                    selectedChar = [0, 0, 0]; // replacementtextbool, line, char
+                    selectTimer = 0;
+                    typeTimer = 0;
+                    moveToNextChar = false;
+                    moveToPrevChar = false;
+                    replacementList = ["_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_"];
+
+                    break;
+                }
                 default: {
                     break;
                 }
@@ -1116,6 +1230,161 @@ function main() {
                     drawCiphertextAndValues(100, 30, "number");
 
                     drawCheckButton();
+                    break;
+                }
+                case CIPHERTYPE.BACONIAN: {
+                    ctx.beginPath();
+                    ctx.fillStyle = "#20c20eff";
+                    ctx.font = "20px Courier New";
+
+                    // title
+                    ctx.fillText("Baconian", 25, 40);
+
+                    if (keys["Tab"]) {
+                        // draw baconian table
+                        ctx.font = "25px Courier New";
+                        for (var i = 0; i < 26; i++) {
+                            ctx.fillText(Object.keys(LETTER).find(key => LETTER[key] == i) + ": " + LETTERTOBACONIAN[Object.keys(LETTER).find(key => LETTER[key] == i)], 430, 45 + (22 * i));
+                        }
+                    } else {
+                    
+                        for (var i = 0; i < encryptedLines.length; i++) {
+                            for (var j = 0; j < encryptedLines[i].length; j++) {
+                                // draw cipherchar
+                                ctx.fillText(encryptedLines[i][j], 30 + (12 * j), -120 + 200 + (80 * i));
+                                // draw values
+                                if (correctLines[i][j] != "_") {
+                                    ctx.fillStyle = "#00ffffff";
+                                    ctx.fillText(correctLines[i][j], 30 + (12 * j), -120 + 220 + (80 * i));
+                                } else {
+                                    ctx.fillStyle = "#20c20eff";
+                                    ctx.fillText(valueLines[i][j], 30 + (12 * j), -120 + 220 + (80 * i));
+                                }
+                                ctx.fillStyle = "#20c20eff";
+                    
+                                // set selected char if clicked on
+                                if (!encryptedLines[i][j].match(symbolRegex) && mouseDown && mouseX > 30 + (12 * j) && mouseX < 45 + (12 * j) && mouseY > -120 + 180 + (80 * i) && mouseY < -120 + 240 + (80 * i)) {
+                                    selectedChar = [0, i, j];
+                                }
+                    
+                                // draw selected char
+                                if (selectedChar[0] == 0) {
+                                    if (selectedChar[1] == i && selectedChar[2] == j) {
+                                        ctx.fillText("^", 30 + (12 * j), -120 + 245 + (80 * i))
+                                    }
+                                }
+                            }
+                        }
+                    
+                        // type letter
+                        if (typeTimer > 10) {
+                            for (const [key, value] of Object.entries(LETTER)) {
+                                if (keys[key.toString().toLowerCase()]) {
+                                    valueLines[selectedChar[1]] = valueLines[selectedChar[1]].replaceAt(selectedChar[2], key.toString());
+                                    moveToNextChar = true;
+                                    typeTimer = 0;
+                                }
+                            }
+                            if (keys["Backspace"]) {
+                                valueLines[selectedChar[1]] = valueLines[selectedChar[1]].replaceAt(selectedChar[2], "_");
+                                moveToPrevChar = true;
+                                typeTimer = 0;
+                            }
+                        }
+                    
+                        // update selected char
+                        if ((keys["ArrowRight"] || moveToNextChar) && selectTimer > 5) {
+                            var prevChar = [selectedChar[0], selectedChar[1], selectedChar[2]];
+                
+                            // increase char
+                            selectedChar[2]++;
+                
+                            // increase char if on symbol
+                            while (selectedChar[2] < encryptedLines[selectedChar[1]].length && encryptedLines[selectedChar[1]][selectedChar[2]].match(symbolRegex)) {
+                                selectedChar[2]++;
+                            }
+                
+                            // if char > line width, increase line
+                            if (selectedChar[2] >= encryptedLines[selectedChar[1]].length) {
+                                if (selectedChar[1] + 1 < encryptedLines.length) {
+                                    selectedChar[1]++;
+                                    selectedChar[2] = 0;
+                                } else {
+                                    selectedChar = prevChar;
+                                }
+                
+                                // if (selectedChar[1] >= encryptedLines.length) {
+                                //     selectedChar[1] = 0;
+                                //     selectedChar[2] = 0;
+                                // }
+                            }
+                
+                            selectTimer = 0;
+                        }
+                        if ((keys["ArrowLeft"] || moveToPrevChar) && selectTimer > 5) {
+                            var prevChar = [selectedChar[0], selectedChar[1], selectedChar[2]];
+                
+                            // increase char
+                            selectedChar[2]--;
+                
+                            // if char > line width, increase line
+                            if (selectedChar[2] < 0) {
+                                if (selectedChar[1] - 1 >= 0) {
+                                    selectedChar[1]--;
+                                    selectedChar[2] = encryptedLines[selectedChar[1]].length - 1;
+                                } else {
+                                    selectedChar = prevChar;
+                                }
+                            }
+                
+                            // increase char if on symbol
+                            while (selectedChar[2] >= 0 && encryptedLines[selectedChar[1]][selectedChar[2]].match(symbolRegex)) {
+                                selectedChar[2]--;
+                            }
+                
+                            selectTimer = 0;
+                        }
+                
+                        moveToNextChar = false;
+                        moveToPrevChar = false;
+                    
+                        // render check button
+                        // fix this later
+                        ctx.strokeStyle = "#20c20eff";
+                        ctx.lineWidth = 3;
+                        ctx.strokeRect(25, 560, 100, 40);
+                        ctx.stroke();
+                        ctx.fillStyle = "#20c20eff";
+                        ctx.font = "20px Courier New";
+                        ctx.fillText("Check", 42, 585);
+                        if (mouseX > 25 && mouseX < 125 && mouseY > 560 && mouseY < 600 && mouseDown) {
+                            var k = 0;
+                            for (var i = 0; i < valueLines.length; i++) {
+                                console.log(valueLines[i].replace(symbolRegex, ""));
+                                for (var j = 0; j < valueLines[i].replace(symbolRegex, "").length; j++) {
+                                    if (j % 5 == 0) {
+                                        console.log("c");
+                                        console.log(j);
+                                        if (valueLines[i].replace(symbolRegex, "")[j] == quote.replace(symbolRegex, "")[k]) {
+                                            console.log(j);
+                                            console.log("a");
+                                            for (var l = 0; l < valueLines[i].length; l++) {
+                                                console.log(l);
+                                                if (l - (valueLines[i].substring(0, l + 1).match(symbolRegex) || []).length == j) {
+                                                    console.log("b");
+                                                    correctLines[i] = correctLines[i].replaceAt(l, quote.replace(symbolRegex, "")[k]);
+                                                }
+                                            }
+                                        }
+                                        k++;
+                                    }
+                                    // if (valueLines[i][j] == quoteLines[i][j]) {
+                                    //     correctLines[i] = correctLines[i].replaceAt(j, quoteLines[i][j]);
+                                    // }
+                                }
+                            }
+                        }
+                    }
                     break;
                 }
                 default: {
