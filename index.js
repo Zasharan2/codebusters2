@@ -113,7 +113,13 @@ const GAMESCREENTYPE = {
     NULL_TO_TITLE: 0.1,
     TITLE: 1,
     TITLE_TO_CODE: 1.2,
-    CODE: 2
+    TITLE_TO_OPTIONS: 1.3,
+    CODE: 2,
+    OPTIONS: 3,
+    OPTIONS_TO_TITLE: 3.1,
+    OPTIONS_TO_CUSTOMCODE: 3.4,
+    CUSTOMCODE: 4,
+    CUSTOMCODE_TO_OPTIONS: 4.3
 }
 
 var gameScreen = GAMESCREENTYPE.NULL_TO_TITLE;
@@ -229,8 +235,12 @@ var valueQuote;
 var valueLines;
 var correctLines;
 var selectedChar;
+var clickTimer = 0;
+var clickDelay = 20;
 var selectTimer;
 var typeTimer;
+var typeDelay = 10;
+var customCode;
 var moveToNextChar;
 var moveToPrevChar;
 var replacementList;
@@ -238,17 +248,29 @@ var key;
 var words;
 
 function main() {
-    // border
-    ctx.beginPath();
-    ctx.fillStyle = "#20c20eff";
-    ctx.fillRect(0, 0, 1000, 625);
-    // background
-    ctx.beginPath();
-    ctx.fillStyle = "#000000ff";
-    ctx.fillRect(10, 10, 980, 605);
+    switch (gameScreen) {
+        case GAMESCREENTYPE.TITLE:
+        case GAMESCREENTYPE.CODE:
+        case GAMESCREENTYPE.OPTIONS:
+        case GAMESCREENTYPE.CUSTOMCODE:
+        {
+            clickTimer += deltaTime;
+
+            // border
+            ctx.beginPath();
+            ctx.fillStyle = "#20c20eff";
+            ctx.fillRect(0, 0, 1000, 625);
+            // background
+            ctx.beginPath();
+            ctx.fillStyle = "#000000ff";
+            ctx.fillRect(10, 10, 980, 605);
+            break;
+        }
+    }
 
     switch (gameScreen) {
         case GAMESCREENTYPE.NULL_TO_TITLE: {
+            customCode = "";
             gameScreen = GAMESCREENTYPE.TITLE;
             break;
         }
@@ -257,6 +279,20 @@ function main() {
             ctx.beginPath();
             ctx.fillStyle = "#20c20eff";
             renderText("Codebusters 2", 500, 60, 40);
+
+            // options button
+            ctx.beginPath();
+            ctx.fillStyle = "#20c20eff";
+            ctx.strokeStyle = "#20c20eff";
+            ctx.lineWidth = 1;
+            if (mouseX > 865 && mouseX < 970 && mouseY > 20 && mouseY < 55) {
+                ctx.strokeRect(865, 20, 105, 30);
+                if (mouseDown) {
+                    gameScreen = GAMESCREENTYPE.TITLE_TO_OPTIONS;
+                }
+            }
+            ctx.font = "20px Courier New";
+            ctx.fillText("Options", 875, 40);
 
             // monoalphabetic label
             ctx.beginPath();
@@ -450,13 +486,162 @@ function main() {
 
             break;
         }
-        case GAMESCREENTYPE.TITLE_TO_CODE: {
-            while (quoteList == null) {
-                // wait
+        case GAMESCREENTYPE.TITLE_TO_OPTIONS: {
+            gameScreen = GAMESCREENTYPE.OPTIONS;
+            break;
+        }
+        case GAMESCREENTYPE.OPTIONS: {
+            // title
+            ctx.beginPath();
+            ctx.fillStyle = "#20c20eff";
+            renderText("Options", 500, 60, 40);
+
+            // back button
+            ctx.beginPath();
+            ctx.fillStyle = "#20c20eff";
+            ctx.strokeStyle = "#20c20eff";
+            ctx.lineWidth = 1;
+            if (mouseX > 20 && mouseX < 90 && mouseY > 20 && mouseY < 55) {
+                ctx.strokeRect(20, 20, 70, 30);
+                if (mouseDown && clickTimer > clickDelay) {
+                    gameScreen = GAMESCREENTYPE.OPTIONS_TO_TITLE;
+                    clickTimer = 0;
+                }
             }
-            quote = quoteList[Math.floor(Math.random() * quoteList.length)].text.toUpperCase();
-            // quote = "test quote: among us in real life sus sus among us in real life sus sus among us in real life sus sus among us in real life sus sus among us in real life sus sus among us in real life sus sus among us in real life sus sus among us in real life sus sus among us in real life sus sus among us in real life sus sus among us in real life sus sus among us in real life sus sus among us in real life sus sus".toUpperCase();
-            console.log(quote);
+            ctx.font = "20px Courier New";
+            ctx.fillText("Back", 30, 40);
+
+            // custom code button
+            ctx.beginPath();
+            ctx.fillStyle = "#20c20eff";
+            ctx.strokeStyle = "#20c20eff";
+            ctx.lineWidth = 1;
+            if (mouseX > 20 && mouseX < 170 && mouseY > 120 && mouseY < 155) {
+                ctx.strokeRect(20, 120, 150, 30);
+                if (mouseDown && clickTimer > clickDelay) {
+                    gameScreen = GAMESCREENTYPE.OPTIONS_TO_CUSTOMCODE;
+                    clickTimer = 0;
+                }
+            }
+            ctx.font = "20px Courier New";
+            ctx.fillText("Custom Code", 30, 140);
+            break;
+        }
+        case GAMESCREENTYPE.OPTIONS_TO_TITLE: {
+            gameScreen = GAMESCREENTYPE.TITLE;
+            break;
+        }
+        case GAMESCREENTYPE.OPTIONS_TO_CUSTOMCODE: {
+            typeTimer = 0;
+            gameScreen = GAMESCREENTYPE.CUSTOMCODE;
+            break;
+        }
+        case GAMESCREENTYPE.CUSTOMCODE: {
+            typeTimer += deltaTime;
+
+            // title
+            ctx.beginPath();
+            ctx.fillStyle = "#20c20eff";
+            renderText("Custom Code", 500, 60, 40);
+
+            // back button
+            ctx.beginPath();
+            ctx.fillStyle = "#20c20eff";
+            ctx.strokeStyle = "#20c20eff";
+            ctx.lineWidth = 1;
+            if (mouseX > 20 && mouseX < 90 && mouseY > 20 && mouseY < 55) {
+                ctx.strokeRect(20, 20, 70, 30);
+                if (mouseDown && clickTimer > clickDelay) {
+                    customCode.replace(/\n/g," ");
+                    gameScreen = GAMESCREENTYPE.CUSTOMCODE_TO_OPTIONS;
+                    clickTimer = 0;
+                }
+            }
+            if (keys["Enter"] && clickTimer > clickDelay) {
+                customCode.replace(/\n/g," ");
+                gameScreen = GAMESCREENTYPE.CUSTOMCODE_TO_OPTIONS;
+                clickTimer = 0;
+            }
+            ctx.font = "20px Courier New";
+            ctx.fillText("Back", 30, 40);
+
+            // code
+            ctx.fillStyle = "#12590a80";
+            for (var i = 0; i < customCode.split("\n").length; i++) {
+                ctx.fillRect(25, 162 + (40 * i), ctx.measureText(customCode.split("\n")[i] + " ").width, 25);
+            }
+            ctx.fillStyle = "#20c20eff";
+            ctx.fillText("Plaintext:", 30, 140);
+            for (var i = 0; i < customCode.split("\n").length; i++) {
+                ctx.fillText(customCode.split("\n")[i], 30, 180 + (40 * i));
+            }
+
+            // letter pressed
+            for (var i = 0; i < 26; i++) {
+                if (typeTimer > typeDelay && keys[Object.keys(LETTER).find(key => LETTER[key] == i).toLowerCase()]) {
+                    customCode += Object.keys(LETTER).find(key => LETTER[key] == i);
+                    typeTimer = 0;
+                }
+            }
+            if (typeTimer > typeDelay && keys[" "]) {
+                customCode += " ";
+                typeTimer = 0;
+            }
+            if (typeTimer > typeDelay && keys["."]) {
+                customCode += ".";
+                typeTimer = 0;
+            }
+            if (typeTimer > typeDelay && keys[","]) {
+                customCode += ",";
+                typeTimer = 0;
+            }
+            if (typeTimer > typeDelay && keys["?"]) {
+                customCode += "?";
+                typeTimer = 0;
+            }
+            if (typeTimer > typeDelay && keys["!"]) {
+                customCode += "!";
+                typeTimer = 0;
+            }
+            if (typeTimer > typeDelay && keys[":"]) {
+                customCode += ":";
+                typeTimer = 0;
+            }
+            if (typeTimer > typeDelay && keys["?"]) {
+                customCode += "?";
+                typeTimer = 0;
+            }
+            if (typeTimer > typeDelay && keys["-"]) {
+                customCode += "-";
+                typeTimer = 0;
+            }
+            if (typeTimer > typeDelay && keys["Backspace"]) {
+                if (customCode[customCode.length - 1] == "\n") {
+                    customCode = customCode.slice(0, customCode.length - 2);
+                } else {
+                    customCode = customCode.slice(0, customCode.length - 1);
+                }
+                typeTimer = 0;
+            }
+            if (ctx.measureText(customCode.split("\n")[customCode.split("\n").length - 1] + " ").width > 900) {
+                customCode += "\n";
+            }
+            break;
+        }
+        case GAMESCREENTYPE.CUSTOMCODE_TO_OPTIONS: {
+            typeTimer = 0;
+            gameScreen = GAMESCREENTYPE.OPTIONS;
+            break;
+        }
+        case GAMESCREENTYPE.TITLE_TO_CODE: {
+            if (customCode.length > 0) {
+                quote = customCode;
+            } else {
+                while (quoteList == null) {
+                    // wait
+                }
+                quote = quoteList[Math.floor(Math.random() * quoteList.length)].text.toUpperCase();
+            }
 
             switch (cipher) {
                 case CIPHERTYPE.ARISTOCRAT: {
@@ -1101,7 +1286,7 @@ function main() {
                     // quote = "DONT THINK OF IT AS FAILURE, THINK OF IT AS TIME RELEASED SUCCESS";
                     // noun = "SAUCER";
                     key = noun;
-                    var encryptedQuote = [];
+                    encryptedQuote = [];
                     for (var i = 0; i < noun.length; i++) {
                         encryptedQuote.push("");
                         for (var j = 0; j < Math.ceil((quote.replace(symbolRegex, "").length) / (noun.length)); j++) {
@@ -1312,7 +1497,7 @@ function main() {
                         }
                     
                         // type letter
-                        if (typeTimer > 10) {
+                        if (typeTimer > typeDelay) {
                             for (const [key, value] of Object.entries(LETTER)) {
                                 if (keys[key.toString().toLowerCase()]) {
                                     valueLines[selectedChar[1]] = valueLines[selectedChar[1]].replaceAt(selectedChar[2], key.toString());
@@ -1487,7 +1672,7 @@ function drawCiphertextAndValues(ypos, spacing, typeOfEntries) {
     }
 
     // type letter
-    if (typeTimer > 10) {
+    if (typeTimer > typeDelay) {
         if (typeOfEntries == "letter") {
             for (const [key, value] of Object.entries(LETTER)) {
                 if (keys[key.toString().toLowerCase()]) {
