@@ -217,6 +217,7 @@ const CIPHERTYPE = {
     VIGENÈRE: 3,
     CRYPTARITHM: 4,
     BACONIAN: 5,
+    COLUMNAR: 6,
 }
 
 var cipher;
@@ -392,45 +393,60 @@ function main() {
             ctx.fillStyle = "#20c20eff";
             ctx.strokeStyle = "#20c20eff";
             ctx.lineWidth = 1;
-            if (mouseX > 280 && mouseX < 395 && mouseY > 120 && mouseY < 155) {
-                ctx.strokeRect(280, 120, 115, 30);
+            if (mouseX > 270 && mouseX < 385 && mouseY > 120 && mouseY < 155) {
+                ctx.strokeRect(270, 120, 115, 30);
                 if (mouseDown) {
                     cipher = CIPHERTYPE.VIGENÈRE;
                     gameScreen = GAMESCREENTYPE.TITLE_TO_CODE;
                 }
             }
             ctx.font = "20px Courier New";
-            ctx.fillText("Vigenère", 290, 140);
+            ctx.fillText("Vigenère", 280, 140);
 
             // baconian
             ctx.beginPath();
             ctx.fillStyle = "#20c20eff";
             ctx.strokeStyle = "#20c20eff";
             ctx.lineWidth = 1;
-            if (mouseX > 280 && mouseX < 395 && mouseY > 160 && mouseY < 195) {
-                ctx.strokeRect(280, 160, 115, 30);
+            if (mouseX > 270 && mouseX < 385 && mouseY > 160 && mouseY < 195) {
+                ctx.strokeRect(270, 160, 115, 30);
                 if (mouseDown) {
                     cipher = CIPHERTYPE.BACONIAN;
                     gameScreen = GAMESCREENTYPE.TITLE_TO_CODE;
                 }
             }
             ctx.font = "20px Courier New";
-            ctx.fillText("Baconian", 290, 180);
+            ctx.fillText("Baconian", 280, 180);
 
             // cryptarithm
             ctx.beginPath();
             ctx.fillStyle = "#20c20eff";
             ctx.strokeStyle = "#20c20eff";
             ctx.lineWidth = 1;
-            if (mouseX > 770 && mouseX < 925 && mouseY > 120 && mouseY < 155) {
-                ctx.strokeRect(770, 120, 155, 30);
+            if (mouseX > 765 && mouseX < 920 && mouseY > 120 && mouseY < 155) {
+                ctx.strokeRect(765, 120, 155, 30);
                 if (mouseDown) {
                     cipher = CIPHERTYPE.CRYPTARITHM;
                     gameScreen = GAMESCREENTYPE.TITLE_TO_CODE;
                 }
             }
             ctx.font = "20px Courier New";
-            ctx.fillText("Cryptarithm", 780, 140);
+            ctx.fillText("Cryptarithm", 775, 140);
+
+            // complete columnar
+            ctx.beginPath();
+            ctx.fillStyle = "#20c20eff";
+            ctx.strokeStyle = "#20c20eff";
+            ctx.lineWidth = 1;
+            if (mouseX > 270 && mouseX < 495 && mouseY > 200 && mouseY < 235) {
+                ctx.strokeRect(270, 200, 225, 30);
+                if (mouseDown) {
+                    cipher = CIPHERTYPE.COLUMNAR;
+                    gameScreen = GAMESCREENTYPE.TITLE_TO_CODE;
+                }
+            }
+            ctx.font = "20px Courier New";
+            ctx.fillText("Complete Columnar", 280, 220);
 
             break;
         }
@@ -494,7 +510,6 @@ function main() {
                         // generate noun
                         noun = nounList[Math.floor(Math.random() * nounList.length)].toUpperCase();
                         noun = removeDuplicate(noun);
-                        console.log(noun);
                         // random offset
                         offset = Math.floor(Math.random() * 26);
                         // init encrypt array
@@ -534,7 +549,6 @@ function main() {
                             }
                         }
                     }
-                    console.log(encryptArray);
                     encryptedQuote = "";
                     for (var i = 0; i < quote.length; i++) {
                         if (!((quote[i].match(symbolRegex) || []).length > 0)) {
@@ -543,7 +557,6 @@ function main() {
                             encryptedQuote += quote[i];
                         }
                     }
-                    console.log(encryptedQuote);
                     encryptedLines = getLines(ctx, encryptedQuote, 930);
 
                     valueQuote = encryptedQuote;
@@ -575,7 +588,6 @@ function main() {
                         // generate noun
                         noun = nounList[Math.floor(Math.random() * nounList.length)].toUpperCase();
                         noun = removeDuplicate(noun);
-                        console.log(noun);
                         // random offset
                         offset = Math.floor(Math.random() * 26);
                         // init encrypt array
@@ -615,7 +627,6 @@ function main() {
                             }
                         }
                     }
-                    console.log(encryptArray);
                     encryptedQuote = "";
                     for (var i = 0; i < quote.length; i++) {
                         if (!((quote[i].match(symbolRegex) || []).length > 0)) {
@@ -624,7 +635,6 @@ function main() {
                             encryptedQuote += quote[i];
                         }
                     }
-                    console.log(encryptedQuote);
                     encryptedLines = getLines(ctx, encryptedQuote, 930);
 
                     valueQuote = encryptedQuote;
@@ -656,7 +666,6 @@ function main() {
                         // generate noun
                         noun = nounList[Math.floor(Math.random() * nounList.length)].toUpperCase();
                         noun = removeDuplicate(noun);
-                        console.log(noun);
                         // random offset
                         offset = Math.floor(Math.random() * 26);
                         // init encrypt array
@@ -707,19 +716,13 @@ function main() {
                     }
 
                     encryptedQuote = "";
-                    console.log(encryptArray);
-                    console.log(encryptArray2);
                     for (var i = 0; i < quote.length; i++) {
                         if (!((quote[i].match(symbolRegex) || []).length > 0)) {
-                            console.log(Object.keys(LETTER).find(key => LETTER[key] == encryptArray[LETTER[quote[i]]]));
-                            console.log(Object.keys(LETTER).find(key => LETTER[key] == encryptArray2[encryptArray.indexOf(LETTER[quote[i]])]));
-                            console.log("");
                             encryptedQuote += Object.keys(LETTER).find(key => LETTER[key] == encryptArray2[encryptArray.indexOf(LETTER[quote[i]])]);
                         } else {
                             encryptedQuote += quote[i];
                         }
                     }
-                    console.log(encryptedQuote);
                     encryptedLines = getLines(ctx, encryptedQuote, 930);
 
                     valueQuote = encryptedQuote;
@@ -756,8 +759,6 @@ function main() {
                         noun1 = removeDuplicate(noun1);
                         noun2 = nounList[Math.floor(Math.random() * nounList.length)].toUpperCase();
                         noun2 = removeDuplicate(noun2);
-                        console.log("n1:" + noun1);
-                        console.log("n2:" + noun2);
                         // random offset
                         offset1 = Math.floor(Math.random() * 26);
                         offset2 = Math.floor(Math.random() * 26);
@@ -831,19 +832,13 @@ function main() {
                     }
 
                     encryptedQuote = "";
-                    console.log(encryptArray1);
-                    console.log(encryptArray2);
                     for (var i = 0; i < quote.length; i++) {
                         if (!((quote[i].match(symbolRegex) || []).length > 0)) {
-                            console.log(Object.keys(LETTER).find(key => LETTER[key] == encryptArray1[LETTER[quote[i]]]));
-                            console.log(Object.keys(LETTER).find(key => LETTER[key] == encryptArray2[encryptArray1.indexOf(LETTER[quote[i]])]));
-                            console.log("");
                             encryptedQuote += Object.keys(LETTER).find(key => LETTER[key] == encryptArray2[encryptArray1.indexOf(LETTER[quote[i]])]);
                         } else {
                             encryptedQuote += quote[i];
                         }
                     }
-                    console.log(encryptedQuote);
                     encryptedLines = getLines(ctx, encryptedQuote, 930);
 
                     valueQuote = encryptedQuote;
@@ -935,9 +930,6 @@ function main() {
                         }
                     }
                     encryptedLines = getLines(ctx, encryptedQuote, 930);
-                    console.log(quote);
-                    console.log(noun);
-                    console.log(encryptedQuote);
 
                     valueQuote = encryptedQuote;
                     quoteLines = getLines(ctx, quote, 930);
@@ -999,9 +991,6 @@ function main() {
                                 letterNumberList[LETTER[noun2[i]]] = a;
                             }
                         }
-                        console.log(letterNumberList);
-                        console.log(noun1);
-                        console.log(noun2);
                     }
                     for (var i = 0; i < 10; i++) {
                         if (!letterNumberList.includes(i)) {
@@ -1029,7 +1018,6 @@ function main() {
 
                     words = [noun1, noun2, word3];
                     key = letterNumberList;
-                    console.log(word3);
 
                     quote = "";
                     encryptedQuote = "";
@@ -1039,7 +1027,6 @@ function main() {
                             encryptedQuote += Object.keys(LETTER).find(key => LETTER[key] == i);
                         }
                     }
-                    console.log(encryptedQuote);
                     encryptedLines = [encryptedQuote];
 
                     valueQuote = encryptedQuote;
@@ -1066,7 +1053,6 @@ function main() {
                             encryptedQuote += quote[i];
                         }
                     }
-                    console.log(encryptedQuote);
                     var encryptArray = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
                     for (var i = 0; i < encryptArray.length; i++) {
                         if (Math.floor(Math.random() * 2) == 0) {
@@ -1075,7 +1061,6 @@ function main() {
                             encryptArray[i] = "B"
                         }
                     }
-                    console.log(encryptArray);
                     for (var i = 0; i < encryptedQuote.length; i++) {
                         if (!((encryptedQuote[i].match(symbolRegex) || []).length > 0)) {
                             var a = Math.floor(Math.random() * 26);
@@ -1085,21 +1070,9 @@ function main() {
                             encryptedQuote = encryptedQuote.replaceAt(i, Object.keys(LETTER).find(key => LETTER[key] == a));
                         }
                     }
-                    console.log(encryptedQuote);
                     encryptedLines = getLines(ctx, encryptedQuote, 930);
 
                     valueQuote = encryptedQuote;
-                    // quoteLines = [];
-                    // var k = 0;
-                    // for (var i = 0; i < encryptedLines.length; i++) {
-                    //     var chars = "";
-                    //     for (var j = 0; j < (encryptedLines[i].length); j += 5) {
-                    //         chars += quote[k];
-                    //         k++;
-                    //     }
-                    //     quoteLines.push(chars);
-                    // }
-                    // console.log(quoteLines);
                     quoteLines = getLines(ctx, quote, 930);
                     valueLines = getLines(ctx, encryptedQuote, 930);
                     correctLines = getLines(ctx, encryptedQuote, 930);
@@ -1114,6 +1087,69 @@ function main() {
                     moveToPrevChar = false;
                     replacementList = ["_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_"];
 
+                    break;
+                }
+                case CIPHERTYPE.COLUMNAR: {
+                    while (nounList == null) {
+                        // wait
+                    }
+                    // ensure there are no dup chars
+                    var noun = "aa";
+                    while (/(.).*\1/.test(noun)) {
+                        noun = nounList[Math.floor(Math.random() * nounList.length)].toUpperCase();
+                    }
+                    // quote = "DONT THINK OF IT AS FAILURE, THINK OF IT AS TIME RELEASED SUCCESS";
+                    // noun = "SAUCER";
+                    key = noun;
+                    var encryptedQuote = [];
+                    for (var i = 0; i < noun.length; i++) {
+                        encryptedQuote.push("");
+                        for (var j = 0; j < Math.ceil((quote.replace(symbolRegex, "").length) / (noun.length)); j++) {
+                            if (typeof quote.replace(symbolRegex, "")[(j * noun.length) + i] != 'undefined') {
+                                encryptedQuote[i] += quote.replace(symbolRegex, "")[(j * noun.length) + i];
+                            } else {
+                                // encryptedQuote[i] += " ";
+                            }
+                        }
+                    }
+                    var sortedNoun = noun.split('').sort().join('');
+                    var temp = [];
+                    for (var i = 0; i < sortedNoun.length; i++) {
+                        temp.push(encryptedQuote[noun.indexOf(sortedNoun[i])]);
+                    }
+                    temp = temp.join('');
+                    encryptedQuote = "";
+                    for (var i = 0; i < temp.length; i++) {
+                        if (i > 0 && i % 5 == 0) {
+                            encryptedQuote += " ";
+                        }
+                        encryptedQuote += temp[i];
+                    }
+                    quote = quote.replace(symbolRegex, "");
+                    temp = quote;
+                    quote = "";
+                    for (var i = 0; i < temp.length; i++) {
+                        if (i > 0 && i % 5 == 0) {
+                            quote += " ";
+                        }
+                        quote += temp[i];
+                    }
+                    encryptedLines = getLines(ctx, encryptedQuote, 930);
+
+                    valueQuote = encryptedQuote;
+                    quoteLines = getLines(ctx, quote, 930);
+                    valueLines = getLines(ctx, encryptedQuote, 930);
+                    correctLines = getLines(ctx, encryptedQuote, 930);
+                    for (var i = 0; i < valueLines.length; i++) {
+                        valueLines[i] = valueLines[i].replaceAll(/[A-Z]/g, "_");
+                        correctLines[i] = correctLines[i].replaceAll(/[A-Z]/g, "_")
+                    }
+                    selectedChar = [0, 0, 0]; // replacementtextbool, line, char
+                    selectTimer = 0;
+                    typeTimer = 0;
+                    moveToNextChar = false;
+                    moveToPrevChar = false;
+                    replacementList = ["_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_"];
                     break;
                 }
                 default: {
@@ -1247,7 +1283,6 @@ function main() {
                             ctx.fillText(Object.keys(LETTER).find(key => LETTER[key] == i) + ": " + LETTERTOBACONIAN[Object.keys(LETTER).find(key => LETTER[key] == i)], 430, 45 + (22 * i));
                         }
                     } else {
-                    
                         for (var i = 0; i < encryptedLines.length; i++) {
                             for (var j = 0; j < encryptedLines[i].length; j++) {
                                 // draw cipherchar
@@ -1360,18 +1395,11 @@ function main() {
                         if (mouseX > 25 && mouseX < 125 && mouseY > 560 && mouseY < 600 && mouseDown) {
                             var k = 0;
                             for (var i = 0; i < valueLines.length; i++) {
-                                console.log(valueLines[i].replace(symbolRegex, ""));
                                 for (var j = 0; j < valueLines[i].replace(symbolRegex, "").length; j++) {
                                     if (j % 5 == 0) {
-                                        console.log("c");
-                                        console.log(j);
                                         if (valueLines[i].replace(symbolRegex, "")[j] == quote.replace(symbolRegex, "")[k]) {
-                                            console.log(j);
-                                            console.log("a");
                                             for (var l = 0; l < valueLines[i].length; l++) {
-                                                console.log(l);
                                                 if (l - (valueLines[i].substring(0, l + 1).match(symbolRegex) || []).length == j) {
-                                                    console.log("b");
                                                     correctLines[i] = correctLines[i].replaceAt(l, quote.replace(symbolRegex, "")[k]);
                                                 }
                                             }
@@ -1385,6 +1413,21 @@ function main() {
                             }
                         }
                     }
+                    break;
+                }
+                case CIPHERTYPE.COLUMNAR: {
+                    ctx.beginPath();
+                    ctx.fillStyle = "#20c20eff";
+                    ctx.font = "20px Courier New";
+
+                    // title
+                    ctx.fillText("Complete Columnar", 25, 40);
+
+                    ctx.fillText("Key: " + key, 30, 80);
+                    drawCiphertextAndValues(-60, 12, "letter");
+
+                    // render check button
+                    drawCheckButton();
                     break;
                 }
                 default: {
