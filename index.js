@@ -115,6 +115,7 @@ const GAMESCREENTYPE = {
     TITLE_TO_CODE: 1.2,
     TITLE_TO_OPTIONS: 1.3,
     CODE: 2,
+    CODE_TO_TITLE: 2.1,
     OPTIONS: 3,
     OPTIONS_TO_TITLE: 3.1,
     OPTIONS_TO_CUSTOMCODE: 3.4,
@@ -1345,9 +1346,43 @@ function main() {
             gameScreen = GAMESCREENTYPE.CODE;
             break;
         }
+        case GAMESCREENTYPE.CODE_TO_TITLE: {
+            gameScreen = GAMESCREENTYPE.TITLE
+            break;
+        }
         case GAMESCREENTYPE.CODE: {
             selectTimer += deltaTime;
             typeTimer += deltaTime;
+
+            // back button
+            ctx.beginPath();
+            ctx.fillStyle = "#20c20eff";
+            ctx.strokeStyle = "#20c20eff";
+            ctx.lineWidth = 1;
+            if (mouseX > 20 && mouseX < 90 && mouseY > 20 && mouseY < 55) {
+                ctx.strokeRect(20, 20, 70, 30);
+                if (mouseDown && clickTimer > clickDelay) {
+                    gameScreen = GAMESCREENTYPE.CODE_TO_TITLE;
+                    clickTimer = 0;
+                }
+            }
+            ctx.font = "20px Courier New";
+            ctx.fillText("Back", 30, 40);
+
+            // next button
+            ctx.beginPath();
+            ctx.fillStyle = "#20c20eff";
+            ctx.strokeStyle = "#20c20eff";
+            ctx.lineWidth = 1;
+            if (mouseX > 910 && mouseX < 980 && mouseY > 570 && mouseY < 605) {
+                ctx.strokeRect(910, 570, 70, 30);
+                if (mouseDown && clickTimer > clickDelay) {
+                    gameScreen = GAMESCREENTYPE.TITLE_TO_CODE;
+                    clickTimer = 0;
+                }
+            }
+            ctx.font = "20px Courier New";
+            ctx.fillText("Next", 920, 590);
 
             switch (cipher) {
                 case CIPHERTYPE.ARISTOCRAT:
@@ -1363,17 +1398,17 @@ function main() {
 
                     // title
                     if (cipher == CIPHERTYPE.ARISTOCRAT) {
-                        ctx.fillText("Aristocrat", 25, 40);
+                        ctx.fillText("Aristocrat", 125, 40);
                     } else if (cipher == CIPHERTYPE.ARISTOCRATK1) {
-                        ctx.fillText("Aristocrat K1", 25, 40);
+                        ctx.fillText("Aristocrat K1", 125, 40);
                     } else if (cipher == CIPHERTYPE.ARISTOCRATK2) {
-                        ctx.fillText("Aristocrat K2", 25, 40);
+                        ctx.fillText("Aristocrat K2", 125, 40);
                     } else if (cipher == CIPHERTYPE.ARISTOCRATK3) {
-                        ctx.fillText("Aristocrat K3", 25, 40);
+                        ctx.fillText("Aristocrat K3", 125, 40);
                     } else if (cipher == CIPHERTYPE.ARISTOCRATK4) {
-                        ctx.fillText("Aristocrat K4", 25, 40);
+                        ctx.fillText("Aristocrat K4", 125, 40);
                     } else if (cipher == CIPHERTYPE.PATRISTOCRAT) {
-                        ctx.fillText("Patristocrat", 25, 40);
+                        ctx.fillText("Patristocrat", 125, 40);
                     }
 
                     // frequencies
@@ -1400,7 +1435,7 @@ function main() {
                 case CIPHERTYPE.VIGENÈRE: {
                     ctx.fillStyle = "#20c20eff";
                     ctx.font = "20px Courier New";
-                    ctx.fillText("Vigenère", 25, 40);
+                    ctx.fillText("Vigenère", 125, 40);
 
                     if (keys["Tab"]) {
                         // draw vigenère table
@@ -1429,7 +1464,7 @@ function main() {
                 case CIPHERTYPE.CRYPTARITHM: {
                     ctx.fillStyle = "#20c20eff";
                     ctx.font = "20px Courier New";
-                    ctx.fillText("Cryptarithm", 25, 40);
+                    ctx.fillText("Cryptarithm", 125, 40);
 
                     ctx.font = "30px Courier New";
                     for (var i = 0; i < words[0].length; i++) {
@@ -1459,7 +1494,7 @@ function main() {
                     ctx.font = "20px Courier New";
 
                     // title
-                    ctx.fillText("Baconian", 25, 40);
+                    ctx.fillText("Baconian", 125, 40);
 
                     if (keys["Tab"]) {
                         // draw baconian table
@@ -1606,7 +1641,7 @@ function main() {
                     ctx.font = "20px Courier New";
 
                     // title
-                    ctx.fillText("Complete Columnar", 25, 40);
+                    ctx.fillText("Complete Columnar", 125, 40);
 
                     ctx.fillText("Key: " + key, 30, 80);
                     drawCiphertextAndValues(-60, 12, "letter");
