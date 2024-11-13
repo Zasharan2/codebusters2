@@ -1501,17 +1501,22 @@ function main() {
                     }
                     for (var i = 0; i < 10; i++) {
                         for (var j = 0; j < 10; j++) {
-                            if (cryptarithmGuideTable[j][i] == 1) {
-                                ctx.fillStyle = "#20c20eff";
-                            } else {
+                            if (cryptarithmGuideTable[j][i] == 0) {
                                 ctx.fillStyle = "#000000ff";
+                                ctx.fillRect(768 + (18 * (i - 1)), 133 + (25 * (j - 1)), 18, 25);
+                            } else if (cryptarithmGuideTable[j][i] == 1) {
+                                ctx.fillStyle = "#20c20eff";
+                                ctx.fillText("X", 732 + (18 * (i + 1)), 129 + (25 * j));
+                            } else if (cryptarithmGuideTable[j][i] == 2) {
+                                ctx.fillStyle = "#20c20eff";
+                                ctx.fillRect(768 + (18 * (i - 1)), 133 + (25 * (j - 1)), 18, 25);
                             }
-                            ctx.fillRect(768 + (18 * (i - 1)), 133 + (25 * (j - 1)), 18, 25);
                             if (mouseX > 768 + (18 * (i - 1)) && mouseX < 768 + (18 * i) && mouseY > 133 + (25 * (j - 1)) && mouseY < 133 + (25 * j)) {
-                                ctx.fillStyle = "#12590a80";
+                                ctx.fillStyle = "#ffffff80";
                                 if (mouseDown && clickTimer > clickDelay) {
                                     ctx.fillStyle = "#20c20eff";
-                                    cryptarithmGuideTable[j][i] = 1 - cryptarithmGuideTable[j][i];
+                                    cryptarithmGuideTable[j][i]++;
+                                    cryptarithmGuideTable[j][i] %= 3;
                                     clickTimer = 0;
                                 }
                                 ctx.fillRect(768 + (18 * (i - 1)), 133 + (25 * (j - 1)), 18, 25);
@@ -1695,6 +1700,7 @@ function main() {
 }
 
 function drawCheckButton() {
+    ctx.beginPath();
     ctx.strokeStyle = "#20c20eff";
     ctx.lineWidth = 3;
     ctx.strokeRect(25, 560, 100, 40);
