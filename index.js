@@ -247,6 +247,7 @@ var moveToPrevChar;
 var replacementList;
 var key;
 var words;
+var cryptarithmGuideTable;
 
 function main() {
     switch (gameScreen) {
@@ -1134,6 +1135,13 @@ function main() {
                     break;
                 }
                 case CIPHERTYPE.CRYPTARITHM: {
+                    cryptarithmGuideTable = [[], [], [], [], [], [], [], [], [], []];
+                    for (var i = 0; i < cryptarithmGuideTable.length; i++) {
+                        for (var j = 0; j < 10; j++) {
+                            cryptarithmGuideTable[i].push(0);
+                        }
+                    }
+
                     while (nounList == null) {
                         // wait
                     }
@@ -1484,6 +1492,32 @@ function main() {
 
                     ctx.font = "30px Courier New";
                     drawCiphertextAndValues(100, 30, "number");
+
+                    // guide table
+                    ctx.fillStyle = "#20c20eff";
+                    ctx.fillText(encryptedQuote, 750, 100);
+                    for (var i = 0; i < 10; i++) {
+                        ctx.fillText(String(i), 730, 130 + (25 * i));
+                    }
+                    for (var i = 0; i < 10; i++) {
+                        for (var j = 0; j < 10; j++) {
+                            if (cryptarithmGuideTable[j][i] == 1) {
+                                ctx.fillStyle = "#20c20eff";
+                            } else {
+                                ctx.fillStyle = "#000000ff";
+                            }
+                            ctx.fillRect(768 + (18 * (i - 1)), 133 + (25 * (j - 1)), 18, 25);
+                            if (mouseX > 768 + (18 * (i - 1)) && mouseX < 768 + (18 * i) && mouseY > 133 + (25 * (j - 1)) && mouseY < 133 + (25 * j)) {
+                                ctx.fillStyle = "#12590a80";
+                                if (mouseDown && clickTimer > clickDelay) {
+                                    ctx.fillStyle = "#20c20eff";
+                                    cryptarithmGuideTable[j][i] = 1 - cryptarithmGuideTable[j][i];
+                                    clickTimer = 0;
+                                }
+                                ctx.fillRect(768 + (18 * (i - 1)), 133 + (25 * (j - 1)), 18, 25);
+                            }
+                        }
+                    }
 
                     drawCheckButton();
                     break;
