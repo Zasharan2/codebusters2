@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang = "en">
+    <head>
+        <title>Codebusters 2</title>
+        <link href = "index.css", rel = "stylesheet">
+    </head>
+    <body>
+        <h1>Codebusters 2</h1>
+        <h2>Help / Info</h2>
+        <h3>Zasharan2</h3>
+
+        <br>
+
+        <h2>Codebusters & Website Operation</h2>
+
+        <p>Codebusters is a <span style = "color: #00ffffff">Science Olympiad</span> event in which students analyze a variety of text and attempt to either decrypt it, revealing what the original message was, or encrypt it, hiding the message from unwanted viewers.</p>
+        <p>There are a wide variety of different ciphers used in competitions, and very often students will be asked to decrypt more texts than encrypt. Therefore, this site is designed to aid in the practice of <span style = "color: #00ffffff">decrypting</span> texts encoded in various ciphers.</p>
+        <p>By clicking on a label, one may generate randomly generate an encrypted text that they may then solve. By clicking on input fields, or using the left and right arrow keys, one can select an input field to then type a possible character into.</p>
+        <p>The "Check" button may be used to determine which characters entered are correct, which will be highlighted in <span style = "color: #00ffffff">blue</span>. The "Next" button may be used to generate a new text of the same cipher type, and the "Back" button returns to the title screen.</p>
+        <p>In "Options", one may create their own text to then be encrypted and solved by someone else. Note that this will not work for all ciphers. For instance, this feature will not work with cryptarithms.</p>
+
+        <h2>Ciphers</h2>
+
+        <h3>Aristocrat</h3>
+        <p>The aristocrat is a <span style = "color: #00ffffff">monoalphabetic substitution cipher</span>, meaning that each character in the plaintext is mapped to one and only one character in the ciphertext (mathematically speaking, there is a bijection between the plaintext and ciphertext).</p>
+        <p>For instance, if the letters A, B, C, D, E map to J, E, I, R, O, respectively, then BAD BED CAB would map to EJR EOR IJE.</p>
+        <p>One rule to make note of, regarding any substitution cipher (not just aristocrats), is that the Science Olympiad rules state that no character may map to itself.</p>
+        <p>To solve these, make use of <span style = "color: #00ffffff">heuristic tricks</span> such as frequency analysis (the observation of which characters are more naturally occurring within the ciphertext compared to the English language), punctuation analysis (the observation of how punctuation might affect nearby words), and memorization of common words.</p>
+        <p>The most common letters in the English language are E, T, A, O, I, N, and S, followed by the rest. Typically these letters are the most informative, and they will always be provided by the event supervisor.</p>
+        <p>"A" and "I" are typically the only single letter words. "The" and "and" are two of the most common three letter words.</p>
+        <p>The set of words with apostrophes in them is relatively small. Think about contractions such as "can't" or "won't", but also more uncommon ones such as "ain't".</p>
+
+        <h3>Aristocrat K1</h3>
+        <p>The K1 aristocrat is a subcipher of the aristocrat. K1s typically have the added restriction that the plainkey is rearranged according to a <span style = "color: #00ffffff">keyword</span>.</p>
+        <p>For instance, if the keyword is BATMAN, the duplicate letters are removed (BATMN), and it is placed randomly within the plainkey. Then, following N, all the letters A through Z, excluding those used in the keyword, fill the rest of the plainkey. The cipherkey is organized in alphabetical order.</p>
+        <p>To solve these, begin with the typical methods for solving aristocrats. Once some letters begin being filled in, one may make additional guesses based on sequences of letters in the plainkey.</p>
+        <p>If there is a long sequence of letters (e.g. HI?KL), then nearby letters may be guessed (J) as it is likely not a keyword portion of the plaintext.</p>
+        <p>Though not represented in this website, the keyword typically relates to the content of the quote, and so knowledge of one may be used to form educated guesses about the other.</p>
+
+        <h3>Aristocrat K2</h3>
+        <p>The K1 aristocrat is another subcipher of the aristocrat. K2s are very similar to K1s, but they differ in that K2s organize the cipherkey according to the keyword, whereas K1s organize the plainkey according to the keyword.</p>
+        <p>The solving process is nearly identical to that of the K1. However, the plainkey and cipherkey alphabets will have to be flipped. (Such functionality is not possible in this website, so it will be more difficult to spot keywords in K2s here.)</p>
+
+        <h3>Aristocrat K3</h3>
+        <p>The K3 aristocrat is another subcipher of the aristocrat. K3s differ from K1s and K2s in that they organize both the plainkey and cipherkey according to a common keyword.</p>
+        <p>The solving of the K3 is much more similar to that of a generic aristocrat, as it is often difficult to make predictions on when the plainkey or the cipherkey ascend in alphabetical order.</p>
+        <p>Oftentimes, a K3 aristocrat problem will ask for the keyword rather than the decrypted quote. The process to determine this keyword is called <span style = "color: #00ffffff">decimation</span>.</p>
+        <p>First, begin by picking an arbitrary letter in either the plainkey. Then, look at its corresponding letter in the cipherkey. Now use this letter as a plainkey index to find a new cipherkey letter. Repeat this process until you have a loop of letters.</p>
+        <p>Once you have this loop, pick three uncommon letters (such as XYZ). Determine the distance between the three letters, checking that they are consistent (if not, then one of the selected letters is part of the keyword).</p>
+        <p>With this distance, pick an arbitrary letter and write out the letters by skipping the determined distance (e.g. if the distance is 2, and we have AJWE, then write A, W, ...). In this organization will the keyword appear.</p>
+        <p>Sometimes the construction of the loop will lead to two, 13-letter loops, rather than one complete 26-letter loop. When this happens, I have no clue what to do ._.</p>
+
+        <h3>Aristocrat K4</h3>
+        <p>The K4 aristocrat is another subcipher of the aristocrat. K4s organize the plainkey and cipherkey according to two distinct keywords.</p>
+        <p>The aristocrat itself may be solved similar to how generic ones are solved, but when determining the keyword, decimation may not be used, as the two alphabets are not identical.</p>
+        <p>To determine the keyword of a K4, one may use pattern analysis.</p>
+
+        <h3>Patristocrat</h3>
+        <p>The patristocrat is a monoalphabetic substitution cipher similar to, but not a subcipher of, the aristocrat. In a patristocrat, punctuation and spacing is not maintained. The entire ciphertext is split into 5-letter segments.</p>
+        <p>The loss of information regarding spacing means that many heuristic tricks for aristocrats either do not work or are less effective. For instance, double letters no longer provide such a restrictive set of words, as they could simply be indicative of two consecutive words with matching end and start letters.</p>
+        <p>Sometimes, a hint is given for patristocrats, due to their difficulty. This may be something indicating what the first five letters are, or that a certain word is located somewhere in the text.</p>
+        <p>To solve these, try to use aristocrat techniques that are applicable, and make sure not to be tricked by the spacing between five letter sequences.</p>
+
+        <h3>Vigenère</h3>
+        <p>The Vigenère cipher is a <span style = "color: #00ffffff">polyalphabetic substitution cipher</span>, meaning that it is non monoalphabetic in nature. If the letter B decrypts to A, you do not know if a later B will also decrypt to A.</p>
+        <p>In the Vigenère cipher, each letter in the alphabet A-Z is assigned a number 0-25. Then, a keyword is chosen for encryption. Each letter in the keyword is paired in order with a letter in the plaintext, with repetition if the keyword is shorter than the plaintext.</p>
+        <p>Then, the values of each plaintext letter and its corresponding keyword letter are added, with the result modulo 26 producing a new letter which is the encrypted text.</p>
+        <p>To decrypt the Vigenère cipher, use a <span style = "color: #00ffffff">Vigenère table</span> (found by pressing Tab) and find the column (or row, as it is symmetric) associated with the keyword letter. Then, observe which row (or column) letter pairs with the keyword letter to produce the encrypted letter. This observed letter is the plaintext letter.</p>
+
+        <h3>Baconian</h3>
+        <p>The Baconian cipher is a polyalphabetic cipher where each ciphertext letter is associated with one of two identifiers (typically referred to as A and B, or sometimes 0 and 1).</p>
+        <p>Quintets of five identifiers are used to determine what letter is associated with the resultant binary value. The table mapping these two can be found by pressing Tab.</p>
+        <p>The letters formed from these identifier quintets make up the plaintext. As an aside, to enter and check letters, only use the first input field of every quintet of letters.</p>
+
+        <h3>Complete Columnar</h3>
+        <p>The Complete Columnar cipher is a polyalphabetic cipher where the plaintext is split into columns and reorganized into one contiguous string.</p>
+        <p>To solve the cipher, observe the number of letters in the keyword. This number is the number of columns the plaintext is sorted into.</p>
+        <p>Determine the number of letters in the ciphertext. If it is divisible by the number of columns, then the work is easy. Otherwise, there are blanks. Determine the number of rows by dividing the length of the ciphertext by the number of columns, then rounding up. The remainder will tell you how many columns have an element in the final row.</p>
+        <p>Sort the letters in the keyword by alphabetical order. Let these letters denote the tableheads. In the columns under each tablehead, fill out the ciphertext from top to bottom, taking care to ensure you are not filling in characters that should be blanks in the later columns.</p>
+        <p>Then, re-sort the columns so that the tableheads re-form the keyword again. Then, by reading left to right, top to bottom, the plaintext will be revealed.</p>
+
+        <h3>Cryptarithm</h3>
+        <p>The Cryptarithm is a more miscellaneous kind of cipher, in that it does not explicitly encrypt any message. It is more of a mathematical numeral puzzle.</p>
+        <p>In a cryptarithm, each letter is associated with a number 0 through 9. The letters represent digits in larger numbers, and two (or sometimes three) words are summed to form a new word. In this website, there will only be sums of two words, and the result may not necessarily be a word.</p>
+        <p>In order to solve these, consider carryovers and 0 summations. For instance, if a letter on the very left has nothing underneath it, and yet is a different letter in the resultant sum, then there must have been a carryover in the column directly right of it. If you see in a column that A + B = A, then likely either B is 0, or B is 9 and there was a carryover from another column.</p>
+        <p>There is an array to the right of the cryptarithm displaying each letter and each number. This array may be used to assist in logical thought as you eliminate options and identify which numbers are correct.</p>
+        <p>By default, each entry is blank. By clicking, an entry will become an X, and by clicking again, it will become completely filled in. After one more click, it will revert back to empty.</p>
+    </body>
+</html>
