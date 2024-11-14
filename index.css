@@ -5,4 +5,16 @@ body {
     text-align: center;
 
     font-family: 'Courier New', Courier, monospace;
+    font-size: larger;
+}
+
+p {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    width: 50em;
+}
+
+h1 {
+    margin-bottom: 0.2em;
 }
