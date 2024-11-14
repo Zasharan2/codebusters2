@@ -18,3 +18,8 @@ p {
 h1 {
     margin-bottom: 0.2em;
 }
+
+a, a:hover, a:visited, a:active {
+    color: #00ffffff;
+    text-decoration: none;
+}
