@@ -806,7 +806,6 @@ function main() {
                         if (noun.length + offset >= 26) {
                             offset -= 26;
                         }
-                        // offset++;
                         var pos = (noun.length + offset);
                         var i = 0;
                         var j = 0;
@@ -884,7 +883,6 @@ function main() {
                         if (noun.length + offset >= 26) {
                             offset -= 26;
                         }
-                        // offset++;
                         var pos = (noun.length + offset);
                         var i = 0;
                         var j = 0;
@@ -989,7 +987,6 @@ function main() {
                         if (noun2.length + offset2 >= 26) {
                             offset2 -= 26;
                         }
-                        // offset++;
                         var pos1 = (noun1.length + offset1);
                         var pos2 = (noun2.length + offset2);
                         var i = 0;
@@ -1308,8 +1305,6 @@ function main() {
                     while (/(.).*\1/.test(noun)) {
                         noun = nounList[Math.floor(Math.random() * nounList.length)].toUpperCase();
                     }
-                    // quote = "DONT THINK OF IT AS FAILURE, THINK OF IT AS TIME RELEASED SUCCESS";
-                    // noun = "SAUCER";
                     key = noun;
                     encryptedQuote = [];
                     for (var i = 0; i < noun.length; i++) {
@@ -1376,10 +1371,6 @@ function main() {
                         noun2 = nounList[Math.floor(Math.random() * nounList.length)].toUpperCase();
                     }
 
-                    console.log(noun1);
-                    console.log(noun2);
-                    console.log(quote);
-
                     key = [noun1, noun2];
 
                     polybiussquare = "";
@@ -1412,7 +1403,6 @@ function main() {
                             j++;
                         }
                     }
-                    console.log(encryptedQuote);
 
                     encryptedLines = getLines(ctx, encryptedQuote, 930);
 
@@ -1431,26 +1421,14 @@ function main() {
                         temp2 += " ";
                     }
                     temp2 = temp2.slice(0, temp2.length - 1);
-                    console.log(temp);
-                    console.log(temp2);
-                    console.log(temp2.length);
-                    console.log(encryptedQuote.split(" "))
                     temp = temp.split("").join(" ");
                     quoteLines = getLines(ctx, temp2, 930);
                     valueLines = getLines(ctx, encryptedQuote, 930);
                     correctLines = getLines(ctx, encryptedQuote, 930);
                     for (var i = 0; i < valueLines.length; i++) {
                         valueLines[i] = valueLines[i].replaceAll(/[0-9]/g, "_");
-                        // valueLines[i] = valueLines[i].replaceAll("___", "_  ");
-                        // valueLines[i] = valueLines[i].replaceAll("__", "_ ");
                         correctLines[i] = correctLines[i].replaceAll(/[0-9]/g, "_")
-                        // correctLines[i] = correctLines[i].replaceAll("___", "_  ");
-                        // correctLines[i] = correctLines[i].replaceAll("__", "_ ");
                     }
-                    console.log(quoteLines);
-                    console.log(encryptedLines);
-                    console.log(valueLines);
-                    console.log(correctLines);
                     selectedChar = [0, 0, 0]; // replacementtextbool, line, char
                     selectTimer = 0;
                     typeTimer = 0;
@@ -1719,11 +1697,6 @@ function main() {
                                 } else {
                                     selectedChar = prevChar;
                                 }
-                
-                                // if (selectedChar[1] >= encryptedLines.length) {
-                                //     selectedChar[1] = 0;
-                                //     selectedChar[2] = 0;
-                                // }
                             }
                 
                             selectTimer = 0;
@@ -1778,9 +1751,6 @@ function main() {
                                         }
                                         k++;
                                     }
-                                    // if (valueLines[i][j] == quoteLines[i][j]) {
-                                    //     correctLines[i] = correctLines[i].replaceAt(j, quoteLines[i][j]);
-                                    // }
                                 }
                             }
                         }
@@ -1841,7 +1811,6 @@ function main() {
 
                     // type letter
                     if (typeTimer > typeDelay) {
-                        // if (typeOfEntries == "letter") {
                             for (const [key, value] of Object.entries(LETTER)) {
                                 if (keys[key.toString().toLowerCase()]) {
                                     valueLines[selectedChar[1]] = valueLines[selectedChar[1]].replaceAt(selectedChar[2], key.toString());
@@ -1849,15 +1818,6 @@ function main() {
                                     typeTimer = 0;
                                 }
                             }
-                        // } else if (typeOfEntries == "number") {
-                        //     for (var i = 0; i < 10; i++) {
-                        //         if (keys[i.toString()]) {
-                        //             valueLines[selectedChar[1]] = valueLines[selectedChar[1]].replaceAt(selectedChar[2], i.toString());
-                        //             moveToNextChar = true;
-                        //             typeTimer = 0;
-                        //         }
-                        //     }
-                        // }
                         if (keys["Backspace"]) {
                             valueLines[selectedChar[1]] = valueLines[selectedChar[1]].replaceAt(selectedChar[2], "_");
                             moveToPrevChar = true;
@@ -1885,11 +1845,6 @@ function main() {
                             } else {
                                 selectedChar = prevChar;
                             }
-
-                            // if (selectedChar[1] >= encryptedLines.length) {
-                            //     selectedChar[1] = 0;
-                            //     selectedChar[2] = 0;
-                            // }
                         }
 
                         selectTimer = 0;
@@ -2037,11 +1992,6 @@ function drawCiphertextAndValues(ypos, spacing, typeOfEntries) {
                 } else {
                     selectedChar = prevChar;
                 }
-
-                // if (selectedChar[1] >= encryptedLines.length) {
-                //     selectedChar[1] = 0;
-                //     selectedChar[2] = 0;
-                // }
             }
 
             selectTimer = 0;
