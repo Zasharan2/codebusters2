@@ -119,8 +119,11 @@ const GAMESCREENTYPE = {
     OPTIONS: 3,
     OPTIONS_TO_TITLE: 3.1,
     OPTIONS_TO_CUSTOMCODE: 3.4,
+    OPTIONS_TO_QUOTELENGTH: 3.5,
     CUSTOMCODE: 4,
-    CUSTOMCODE_TO_OPTIONS: 4.3
+    CUSTOMCODE_TO_OPTIONS: 4.3,
+    QUOTELENGTH: 5,
+    QUOTELENGTH_TO_OPTIONS: 5.3,
 }
 
 var gameScreen = GAMESCREENTYPE.NULL_TO_TITLE;
@@ -243,6 +246,7 @@ var selectTimer;
 var typeTimer;
 var typeDelay = 10;
 var customCode;
+var quoteLength;
 var moveToNextChar;
 var moveToPrevChar;
 var replacementList;
@@ -256,6 +260,7 @@ function main() {
         case GAMESCREENTYPE.CODE:
         case GAMESCREENTYPE.OPTIONS:
         case GAMESCREENTYPE.CUSTOMCODE:
+        case GAMESCREENTYPE.QUOTELENGTH:
         {
             clickTimer += deltaTime;
 
@@ -274,6 +279,7 @@ function main() {
     switch (gameScreen) {
         case GAMESCREENTYPE.NULL_TO_TITLE: {
             customCode = "";
+            quoteLength = "";
             gameScreen = GAMESCREENTYPE.TITLE;
             break;
         }
@@ -543,6 +549,21 @@ function main() {
             }
             ctx.font = "20px Courier New";
             ctx.fillText("Custom Code", 30, 140);
+
+            // quote length button
+            ctx.beginPath();
+            ctx.fillStyle = "#20c20eff";
+            ctx.strokeStyle = "#20c20eff";
+            ctx.lineWidth = 1;
+            if (mouseX > 20 && mouseX < 185 && mouseY > 160 && mouseY < 195) {
+                ctx.strokeRect(20, 160, 165, 30);
+                if (mouseDown && clickTimer > clickDelay) {
+                    gameScreen = GAMESCREENTYPE.OPTIONS_TO_QUOTELENGTH;
+                    clickTimer = 0;
+                }
+            }
+            ctx.font = "20px Courier New";
+            ctx.fillText("Quote Length", 30, 180);
             break;
         }
         case GAMESCREENTYPE.OPTIONS_TO_TITLE: {
@@ -570,13 +591,13 @@ function main() {
             if (mouseX > 20 && mouseX < 90 && mouseY > 20 && mouseY < 55) {
                 ctx.strokeRect(20, 20, 70, 30);
                 if (mouseDown && clickTimer > clickDelay) {
-                    customCode.replace(/\n/g," ");
+                    customCode = customCode.replace(/\n/g," ");
                     gameScreen = GAMESCREENTYPE.CUSTOMCODE_TO_OPTIONS;
                     clickTimer = 0;
                 }
             }
             if (keys["Enter"] && clickTimer > clickDelay) {
-                customCode.replace(/\n/g," ");
+                customCode = customCode.replace(/\n/g," ");
                 gameScreen = GAMESCREENTYPE.CUSTOMCODE_TO_OPTIONS;
                 clickTimer = 0;
             }
@@ -651,6 +672,76 @@ function main() {
             gameScreen = GAMESCREENTYPE.OPTIONS;
             break;
         }
+        case GAMESCREENTYPE.OPTIONS_TO_QUOTELENGTH: {
+            typeTimer = 0;
+            gameScreen = GAMESCREENTYPE.QUOTELENGTH;
+            break;
+        }
+        case GAMESCREENTYPE.QUOTELENGTH: {
+            typeTimer += deltaTime;
+
+            // title
+            ctx.beginPath();
+            ctx.fillStyle = "#20c20eff";
+            renderText("Quote Length", 500, 60, 40);
+
+            // back button
+            ctx.beginPath();
+            ctx.fillStyle = "#20c20eff";
+            ctx.strokeStyle = "#20c20eff";
+            ctx.lineWidth = 1;
+            if (mouseX > 20 && mouseX < 90 && mouseY > 20 && mouseY < 55) {
+                ctx.strokeRect(20, 20, 70, 30);
+                if (mouseDown && clickTimer > clickDelay) {
+                    quoteLength = quoteLength.replace(/\n/g,"");
+                    gameScreen = GAMESCREENTYPE.QUOTELENGTH_TO_OPTIONS;
+                    clickTimer = 0;
+                }
+            }
+            if (keys["Enter"] && clickTimer > clickDelay) {
+                quoteLength = quoteLength.replace(/\n/g,"");
+                gameScreen = GAMESCREENTYPE.QUOTELENGTH_TO_OPTIONS;
+                clickTimer = 0;
+            }
+            ctx.font = "20px Courier New";
+            ctx.fillText("Back", 30, 40);
+
+            // code
+            ctx.fillStyle = "#12590a80";
+            for (var i = 0; i < quoteLength.split("\n").length; i++) {
+                ctx.fillRect(25, 162 + (40 * i), ctx.measureText(quoteLength.split("\n")[i] + " ").width, 25);
+            }
+            ctx.fillStyle = "#20c20eff";
+            ctx.fillText("Length:", 30, 140);
+            for (var i = 0; i < quoteLength.split("\n").length; i++) {
+                ctx.fillText(quoteLength.split("\n")[i], 30, 180 + (40 * i));
+            }
+
+            // letter pressed
+            for (var i = 0; i < 10; i++) {
+                if (typeTimer > typeDelay && keys[String(i)]) {
+                    quoteLength += String(i);
+                    typeTimer = 0;
+                }
+            }
+            if (typeTimer > typeDelay && keys["Backspace"]) {
+                if (quoteLength[quoteLength.length - 1] == "\n") {
+                    quoteLength = quoteLength.slice(0, quoteLength.length - 2);
+                } else {
+                    quoteLength = quoteLength.slice(0, quoteLength.length - 1);
+                }
+                typeTimer = 0;
+            }
+            if (ctx.measureText(quoteLength.split("\n")[quoteLength.split("\n").length - 1] + " ").width > 900) {
+                quoteLength += "\n";
+            }
+            break;
+        }
+        case GAMESCREENTYPE.QUOTELENGTH_TO_OPTIONS: {
+            typeTimer = 0;
+            gameScreen = GAMESCREENTYPE.OPTIONS;
+            break;
+        }
         case GAMESCREENTYPE.TITLE_TO_CODE: {
             if (customCode.length > 0) {
                 quote = customCode;
@@ -658,7 +749,19 @@ function main() {
                 while (quoteList == null) {
                     // wait
                 }
-                quote = quoteList[Math.floor(Math.random() * quoteList.length)].text.toUpperCase();
+                if (quoteLength.length > 0) {
+                    quote = quoteList[Math.floor(Math.random() * quoteList.length)].text.toUpperCase();
+                    var limitCheck = 0;
+                    while (quote.replace(symbolRegex, "").length != Number(quoteLength)) {
+                        quote = quoteList[Math.floor(Math.random() * quoteList.length)].text.toUpperCase();
+                        limitCheck++;
+                        if (limitCheck > 10000) {
+                            break;
+                        }
+                    }
+                } else {
+                    quote = quoteList[Math.floor(Math.random() * quoteList.length)].text.toUpperCase();
+                }
             }
 
             switch (cipher) {
