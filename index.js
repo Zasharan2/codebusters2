@@ -224,6 +224,7 @@ const CIPHERTYPE = {
     ARISTOCRATK3: 1.3,
     ARISTOCRATK4: 1.4,
     PATRISTOCRAT: 2,
+    PATRISTOCRATK1: 2.1,
     VIGENÈRE: 3,
     CRYPTARITHM: 4,
     BACONIAN: 5,
@@ -432,6 +433,21 @@ function main() {
             }
             ctx.font = "20px Courier New";
             ctx.fillText("Patristocrat", 30, 340);
+
+            // patristocrat k1
+            ctx.beginPath();
+            ctx.fillStyle = "#20c20eff";
+            ctx.strokeStyle = "#20c20eff";
+            ctx.lineWidth = 1;
+            if (mouseX > 20 && mouseX < 217 && mouseY > 360 && mouseY < 395) {
+                ctx.strokeRect(20, 360, 197, 30);
+                if (mouseDown) {
+                    cipher = CIPHERTYPE.PATRISTOCRATK1;
+                    gameScreen = GAMESCREENTYPE.TITLE_TO_CODE;
+                }
+            }
+            ctx.font = "20px Courier New";
+            ctx.fillText("Patristocrat K1", 30, 380);
 
             // vigenère
             ctx.beginPath();
@@ -1215,6 +1231,99 @@ function main() {
 
                     break;
                 }
+                case CIPHERTYPE.PATRISTOCRATK1: {
+                    while (nounList == null) {
+                        // wait
+                    }
+                    var noun;
+                    var offset;
+                    var encryptArray = [];
+                    var goodArrayCheck = false;
+                    while (!goodArrayCheck) {
+                        // generate noun
+                        noun = nounList[Math.floor(Math.random() * nounList.length)].toUpperCase();
+                        noun = removeDuplicate(noun);
+                        // random offset
+                        offset = Math.floor(Math.random() * 26);
+                        // init encrypt array
+                        encryptArray = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
+                        // put in noun into encrypt array
+                        for (var i = 0; i < noun.length; i++) {
+                            if (offset + i < 26) {
+                                encryptArray[offset + i] = LETTER[noun[i]];
+                            } else if (offset + i >= 26) {
+                                encryptArray[offset + i - 26] = LETTER[noun[i]];
+                            }
+                        }
+                        if (noun.length + offset >= 26) {
+                            offset -= 26;
+                        }
+                        // offset++;
+                        var pos = (noun.length + offset);
+                        var i = 0;
+                        var j = 0;
+                        while (i < (26 - noun.length)) {
+                            while (encryptArray.includes(j)) {
+                                j++;
+                            }
+                            encryptArray[pos] = j;
+                            pos++;
+                            if (pos >= 26) {
+                                pos -= 26;
+                            }
+                            i++;
+                            j++;
+                        }
+                        // check good array
+                        goodArrayCheck = true;
+                        for (var m = 0; m < encryptArray.length; m++) {
+                            if (encryptArray[m] == m) {
+                                goodArrayCheck = false;
+                            }
+                        }
+                    }
+
+                    var tempq = "";
+                    var j = 0;
+                    for (var i = 0; i < quote.length; i++) {
+                        if (!((quote[i].match(symbolRegex) || []).length > 0)) {
+                            if (j > 0 && j % 5 == 0) {
+                                tempq += " ";
+                            }
+                            tempq += quote[i];
+                            j++
+                        }
+                    }
+                    quote = tempq;
+
+                    encryptedQuote = "";
+                    var j = 0;
+                    for (var i = 0; i < quote.length; i++) {
+                        if (!((quote[i].match(symbolRegex) || []).length > 0)) {
+                            encryptedQuote += Object.keys(LETTER).find(key => LETTER[key] == encryptArray[LETTER[quote[i]]]);
+                        } else {
+                            encryptedQuote += quote[i];
+                        }
+                    }
+                    encryptedLines = getLines(ctx, encryptedQuote, 930);
+
+                    valueQuote = encryptedQuote;
+                    quoteLines = getLines(ctx, quote, 930);
+                    valueLines = getLines(ctx, encryptedQuote, 930);
+                    correctLines = getLines(ctx, encryptedQuote, 930);
+                    for (var i = 0; i < valueLines.length; i++) {
+                        valueLines[i] = valueLines[i].replaceAll(/[A-Z]/g, "_");
+                        correctLines[i] = correctLines[i].replaceAll(/[A-Z]/g, "_")
+                    }
+                    selectedChar = [0, 0, 0]; // replacementtextbool, line, char
+                    selectTimer = 0;
+                    typeTimer = 0;
+                    moveToNextChar = false;
+                    moveToPrevChar = false;
+                    replacementList = ["_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_"];
+
+                    break;
+                }
                 case CIPHERTYPE.VIGENÈRE: {
                     while (nounList == null) {
                         // wait
@@ -1593,6 +1702,7 @@ function main() {
                 case CIPHERTYPE.ARISTOCRATK3:
                 case CIPHERTYPE.ARISTOCRATK4:
                 case CIPHERTYPE.PATRISTOCRAT:
+                case CIPHERTYPE.PATRISTOCRATK1:
                 {
                     ctx.beginPath();
                     ctx.fillStyle = "#20c20eff";
@@ -1611,6 +1721,8 @@ function main() {
                         ctx.fillText("Aristocrat K4", 125, 40);
                     } else if (cipher == CIPHERTYPE.PATRISTOCRAT) {
                         ctx.fillText("Patristocrat", 125, 40);
+                    } else if (cipher == CIPHERTYPE.PATRISTOCRATK1) {
+                        ctx.fillText("Patristocrat K1", 125, 40);
                     }
 
                     // frequencies
