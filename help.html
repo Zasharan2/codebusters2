@@ -79,6 +79,18 @@
         <p>Sort the letters in the keyword by alphabetical order. Let these letters denote the tableheads. In the columns under each tablehead, fill out the ciphertext from top to bottom, taking care to ensure you are not filling in characters that should be blanks in the later columns.</p>
         <p>Then, re-sort the columns so that the tableheads re-form the keyword again. Then, by reading left to right, top to bottom, the plaintext will be revealed.</p>
 
+        <h3>Nihilist</h3>
+        <p>The Nihilist cipher is a polyalphabetic cipher which encrypts plaintext letters into numbers based on their plaintext position in a 5 by 5 grid of letters, added with another plaintext key converted into numbers in the same manner.</p>
+        <p>The grid of letters (called a Polybius square) is constructed using a Polybius key, usually given. The square is filled out left to right, top to bottom with the Polybius key until the key runs out, after which the rest is filled with the rest of the letters of the alphabet in alphabetical order. I and J are treated as the same letter.</p>
+        <p>To solve the cipher, write the keyword out, one letter at a time under each number, repeating if the key runs out. Convert these letters into numbers by finding the row and column of the letter in the Polybius square, and writing them next to each other, row first. For instance, if the letter Y is in row 5, column 4, you would write 54.</p>
+        <p>Then, subtract the given number with this new number. The result will be the number corresponding with the plaintext letter, and so you may use the first digit as the row and the second digit as the column to look up the corresponding letter in the Polybius square. Writing these letters out will yield you the plaintext, decrypting the message.</p>
+
+        <h3>Checkerboard</h3>
+        <p>The Checkerboard cipher is a polyalphabetic cipher similar to the Nihilist cipher, using a Polybius square and keyword. Instead of numbers, rather, two five-letter keywords are written left to right and top to bottom on the sides of the Polybius square. A letter in the plaintext is converted into ciphertext by writing out the letter corresponding to the row followed by the letter corresponding to the column in which the plaintext letter may be found.</p>
+        <p>To solve the cipher, take note of all letters appearing first within each two-letter pair. Arrange these letters into a word (if there are anagrams, you will have to try all of them to determine which one is intended), and write them top to bottom along the left side of the Polybius square. Then, do the same with the letters appearing second within each pair, writing the resulting word left to right on top of the Polybius square.</p>
+        <p>Then, for each two-letter pair, simply look at the row corresponding with the first letter and the column corresponding with the second letter, to obtain the plaintext letter. Make sure the plaintext makes sense, lest you might need to consider an anagram of one of the two keywords.</p>
+        <p>There is also an alternative version of the Checkerboard cipher, in which there are two keywords for the rows and two for the columns.</p>
+
         <h3>Cryptarithm</h3>
         <p>The Cryptarithm is a more miscellaneous kind of cipher, in that it does not explicitly encrypt any message. It is more of a mathematical numeral puzzle.</p>
         <p>In a cryptarithm, each letter is associated with a number 0 through 9. The letters represent digits in larger numbers, and two (or sometimes three) words are summed to form a new word. In this website, there will only be sums of two words, and the result may not necessarily be a word.</p>

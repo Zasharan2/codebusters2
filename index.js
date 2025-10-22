@@ -230,6 +230,7 @@ const CIPHERTYPE = {
     BACONIAN: 5,
     COLUMNAR: 6,
     NIHILIST: 7,
+    CHECKERBOARD: 8,
 }
 
 var cipher;
@@ -523,6 +524,21 @@ function main() {
             }
             ctx.font = "20px Courier New";
             ctx.fillText("Nihilist", 280, 260);
+
+            // checkerboard
+            ctx.beginPath();
+            ctx.fillStyle = "#20c20eff";
+            ctx.strokeStyle = "#20c20eff";
+            ctx.lineWidth = 1;
+            if (mouseX > 270 && mouseX < 435 && mouseY > 280 && mouseY < 315) {
+                ctx.strokeRect(270, 280, 165, 30);
+                if (mouseDown) {
+                    cipher = CIPHERTYPE.CHECKERBOARD;
+                    gameScreen = GAMESCREENTYPE.TITLE_TO_CODE;
+                }
+            }
+            ctx.font = "20px Courier New";
+            ctx.fillText("Checkerboard", 280, 300);
 
             break;
         }
@@ -1649,6 +1665,94 @@ function main() {
                     replacementList = ["_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_"];
                     break;
                 }
+                case CIPHERTYPE.CHECKERBOARD: {
+                    while (nounList == null) {
+                        // wait
+                    }
+                    // ensure there are no dup chars
+                    var noun1 = "aa";
+                    while (/(.).*\1/.test(noun1) || noun1.length > 25) {
+                        noun1 = nounList[Math.floor(Math.random() * nounList.length)].toUpperCase();
+                    }
+                    var noun2 = "aa";
+                    while (/(.).*\1/.test(noun2) || noun2.length != 5) {
+                        noun2 = nounList[Math.floor(Math.random() * nounList.length)].toUpperCase();
+                    }
+                    var noun3 = "aa";
+                    while (/(.).*\1/.test(noun3) || noun3.length != 5) {
+                        noun3 = nounList[Math.floor(Math.random() * nounList.length)].toUpperCase();
+                    }
+
+                    key = [noun1, noun2, noun3];
+
+                    polybiussquare = "";
+                    for (var i = 0; i < noun1.length; i++) {
+                        polybiussquare += noun1[i];
+                    }
+                    var j = 0;
+                    for (var i = noun1.length; i < 25; i++) {
+                        while (noun1.includes("ABCDEFGHIJKLMNOPQRSTUVWXYZ"[j]) || ("ABCDEFGHIJKLMNOPQRSTUVWXYZ"[j] == "I" && noun1.includes("J")) || ("ABCDEFGHIJKLMNOPQRSTUVWXYZ"[j] == "J" && noun1.includes("I")) || ("ABCDEFGHIJKLMNOPQRSTUVWXYZ"[j] == "J" && polybiussquare.includes("I")) || ("ABCDEFGHIJKLMNOPQRSTUVWXYZ"[j] == "I" && polybiussquare.includes("J"))) {
+                            j++;
+                        }
+                        polybiussquare += Object.keys(LETTER).find(key => LETTER[key] == j);
+                        j++;
+                    }
+
+                    encryptedQuote = "";
+                    var j = 0;
+                    for (var i = 0; i < quote.length; i++) {
+                        if (!((quote[i].match(symbolRegex) || []).length > 0)) {
+                            // var num = polybiussquare.indexOf(noun2[j % noun2.length]);
+                            // var value = Number(String(Math.floor(num / 5) + 1) + String((num % 5) + 1));
+                            var num2 = polybiussquare.indexOf(quote[i]);
+                            if (polybiussquare.includes("I") && quote[i] == "J") {
+                                num2 = polybiussquare.indexOf("I");
+                            } else if (polybiussquare.includes("J") && quote[i] == "I") {
+                                num2 = polybiussquare.indexOf("J");
+                            }
+                            var end = String(key[1][Math.floor(num2 / 5)]) + String(key[2][num2 % 5]);
+                            if (j == 0) {
+                                encryptedQuote += String(end);
+                            } else {
+                                encryptedQuote += " " + String(end);
+                            }
+                            j++;
+                        }
+                    }
+
+                    encryptedLines = getLines(ctx, encryptedQuote, 930);
+
+                    valueQuote = encryptedQuote;
+                    var temp = "";
+                    for (var i = 0; i < quote.length; i++) {
+                        if (!quote[i].match(symbolRegex)) {
+                            temp += quote[i];
+                        }
+                    }
+                    var temp2 = "";
+                    for (var i = 0; i < encryptedQuote.split(" ").length; i++) {
+                        for (var j = 0; j < encryptedQuote.split(" ")[i].length; j++) {
+                            temp2 += temp[i];
+                        }
+                        temp2 += " ";
+                    }
+                    temp2 = temp2.slice(0, temp2.length - 1);
+                    temp = temp.split("").join(" ");
+                    quoteLines = getLines(ctx, temp2, 930);
+                    valueLines = getLines(ctx, encryptedQuote, 930);
+                    correctLines = getLines(ctx, encryptedQuote, 930);
+                    for (var i = 0; i < valueLines.length; i++) {
+                        valueLines[i] = valueLines[i].replaceAll(/[A-Z]/g, "_");
+                        correctLines[i] = correctLines[i].replaceAll(/[A-Z]/g, "_")
+                    }
+                    selectedChar = [0, 0, 0]; // replacementtextbool, line, char
+                    selectTimer = 0;
+                    typeTimer = 0;
+                    moveToNextChar = false;
+                    moveToPrevChar = false;
+                    replacementList = ["_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_"];
+                    break;
+                }
                 default: {
                     break;
                 }
@@ -2020,6 +2124,114 @@ function main() {
                             // draw selected char
                             if (selectedChar[1] == i && selectedChar[2] == j) {
                                 ctx.fillText("^", 30 + ((12) * j), (-30) + 245 + (80 * i) + 2 * ((12) - 12))
+                            }
+                        }
+                    }
+
+                    // type letter
+                    if (typeTimer > typeDelay) {
+                            for (const [key, value] of Object.entries(LETTER)) {
+                                if (keys[key.toString().toLowerCase()]) {
+                                    valueLines[selectedChar[1]] = valueLines[selectedChar[1]].replaceAt(selectedChar[2], key.toString());
+                                    moveToNextChar = true;
+                                    typeTimer = 0;
+                                }
+                            }
+                        if (keys["Backspace"]) {
+                            valueLines[selectedChar[1]] = valueLines[selectedChar[1]].replaceAt(selectedChar[2], "_");
+                            moveToPrevChar = true;
+                            typeTimer = 0;
+                        }
+                    }
+
+                    // update selected char
+                    if ((keys["ArrowRight"] || moveToNextChar) && selectTimer > 5) {
+                        var prevChar = [selectedChar[0], selectedChar[1], selectedChar[2]];
+
+                        // increase char
+                        selectedChar[2]++;
+
+                        // increase char if on symbol
+                        while (selectedChar[2] < encryptedLines[selectedChar[1]].length && encryptedLines[selectedChar[1]][selectedChar[2]].match(/ /g)) {
+                            selectedChar[2]++;
+                        }
+
+                        // if char > line width, increase line
+                        if (selectedChar[2] >= encryptedLines[selectedChar[1]].length) {
+                            if (selectedChar[1] + 1 < encryptedLines.length) {
+                                selectedChar[1]++;
+                                selectedChar[2] = 0;
+                            } else {
+                                selectedChar = prevChar;
+                            }
+                        }
+
+                        selectTimer = 0;
+                    }
+                    if ((keys["ArrowLeft"] || moveToPrevChar) && selectTimer > 5) {
+                        var prevChar = [selectedChar[0], selectedChar[1], selectedChar[2]];
+
+                        // increase char
+                        selectedChar[2]--;
+
+                        // if char > line width, increase line
+                        if (selectedChar[2] < 0) {
+                            if (selectedChar[1] - 1 >= 0) {
+                                selectedChar[1]--;
+                                selectedChar[2] = encryptedLines[selectedChar[1]].length - 1;
+                            } else {
+                                selectedChar = prevChar;
+                            }
+                        }
+
+                        // increase char if on symbol
+                        while (selectedChar[2] >= 0 && encryptedLines[selectedChar[1]][selectedChar[2]].match(/ /g)) {
+                            selectedChar[2]--;
+                        }
+
+                        selectTimer = 0;
+                    }
+
+                    moveToNextChar = false;
+                    moveToPrevChar = false;
+
+                    // render check button
+                    drawCheckButton();
+                    break;
+                }
+                case CIPHERTYPE.CHECKERBOARD: {
+                    ctx.beginPath();
+                    ctx.fillStyle = "#20c20eff";
+                    ctx.font = "20px Courier New";
+
+                    // title
+                    ctx.fillText("Checkerboard", 125, 40);
+
+                    ctx.fillText("Polybius Key: " + key[0], 30, 80);
+                    // ctx.fillText("Key: " + key[1], 30, 110);
+
+                    for (var i = 0; i < encryptedLines.length; i++) {
+                        for (var j = 0; j < encryptedLines[i].length; j++) {
+                            // draw cipherchar
+                            ctx.fillText(encryptedLines[i][j], 30 + ((12) * j), (-60) + 200 + (80 * i));
+                            // draw values
+                            if (correctLines[i][j] != "_") {
+                                ctx.fillStyle = "#00ffffff";
+                                ctx.fillText(correctLines[i][j], 30 + ((12) * j), (-60) + 220 + ((12) - 12) + (80 * i));
+                            } else {
+                                ctx.fillStyle = "#20c20eff";
+                                ctx.fillText(valueLines[i][j], 30 + ((12) * j), (-60) + 220 + ((12) - 12) + (80 * i));
+                            }
+                            ctx.fillStyle = "#20c20eff";
+                            
+                            // set selected char if clicked on
+                            if (!valueLines[i][j].match(/ /g) && mouseDown && mouseX > 30 + ((12) * j) && mouseX < 45 + ((12) * j) && mouseY > (-60) + 180 + (80 * i) && mouseY < (-60) + 240 + (80 * i)) {
+                                selectedChar = [0, i, j];
+                            }
+
+                            // draw selected char
+                            if (selectedChar[1] == i && selectedChar[2] == j) {
+                                ctx.fillText("^", 30 + ((12) * j), (-60) + 245 + (80 * i) + 2 * ((12) - 12))
                             }
                         }
                     }
